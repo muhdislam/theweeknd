@@ -1,4 +1,215 @@
-<script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Weeknd | Global Tour</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Inter:wght@300;400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none; 
+            -webkit-user-select: none;
+        }
+
+        body, html {
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background-color: #030303;
+            color: #ffffff;
+            overflow: hidden; 
+            touch-action: manipulation; 
+        }
+
+        /* --- THE FAKE VERIFICATION OVERLAY --- */
+        #verify-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .verify-box {
+            background-color: #111;
+            padding: 40px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .verify-box h2 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            color: #fff;
+        }
+
+        .verify-box p {
+            color: #aaa;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        #verify-btn {
+            background-color: #ff3333;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        #verify-btn:hover {
+            background-color: #cc0000;
+            color: #fff;
+        }
+
+        /* --- MAIN SITE STYLES --- */
+        .hero-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: radial-gradient(circle at center, #2a0000 0%, #030303 60%);
+            text-align: center;
+            position: relative;
+            padding: 20px;
+            filter: blur(5px); /* Blurs the background initially */
+            transition: filter 0.5s ease;
+        }
+
+        .tour-label {
+            font-size: 0.9rem;
+            letter-spacing: 5px;
+            color: #ff3333;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(255, 51, 51, 0.5);
+        }
+
+        h1 {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 5rem;
+            letter-spacing: 12px;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            margin-bottom: 10px;
+            line-height: 1.1;
+        }
+
+        .tour-details {
+            font-size: 1.2rem;
+            color: #aaaaaa;
+            margin-bottom: 5px;
+            font-weight: 300;
+        }
+
+        .location {
+            font-size: 1.1rem;
+            color: #666666;
+            margin-bottom: 60px;
+        }
+
+        .button-wrapper {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        #prank-btn {
+            position: absolute;
+            padding: 18px 45px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 3px;
+            background-color: transparent;
+            color: #ff3333;
+            border: 2px solid #ff3333;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 51, 51, 0.3), inset 0 0 10px rgba(255, 51, 51, 0.1);
+            transition: left 0.02s linear, top 0.02s linear, background-color 0.3s;
+            z-index: 999;
+        }
+
+        #prank-btn:hover {
+            background-color: #ff3333;
+            color: #000;
+            box-shadow: 0 0 30px rgba(255, 51, 51, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.8rem;
+                letter-spacing: 6px;
+            }
+            .tour-label {
+                font-size: 0.8rem;
+                letter-spacing: 3px;
+            }
+            .tour-details {
+                font-size: 1rem;
+            }
+            .location {
+                font-size: 0.9rem;
+                margin-bottom: 40px;
+            }
+            #prank-btn {
+                padding: 15px 35px;
+                font-size: 1rem;
+            }
+            #prank-btn::before {
+                content: '';
+                position: absolute;
+                top: -20px;
+                left: -20px;
+                right: -20px;
+                bottom: -20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="verify-overlay">
+        <div class="verify-box">
+            <h2>Security Check</h2>
+            <p>Due to high demand for The Weeknd tickets, please verify you are human to enter the site.</p>
+            <button id="verify-btn">Verify & Enter</button>
+        </div>
+    </div>
+
+    <div class="hero-section" id="main-content">
+        <div class="tour-label">ABEL TESFAYE</div>
+        <h1>THE WEEKND</h1>
+        <div class="tour-details">November 2026 • Exclusive One-Night Event</div>
+        <div class="location">Stadium Nasional Bukit Jalil, Kuala Lumpur</div>
+        
+        <div class="button-wrapper">
+            <button id="prank-btn">BUY TICKETS</button>
+        </div>
+    </div>
+
+   <script>
         const button = document.getElementById('prank-btn');
         const verifyBtn = document.getElementById('verify-btn');
         const overlay = document.getElementById('verify-overlay');
@@ -82,3 +293,5 @@
         button.addEventListener('mouseover', runAway);
         button.addEventListener('touchstart', runAway, { passive: false });
     </script>
+
+</body>
