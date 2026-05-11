@@ -217,7 +217,19 @@
         const overlay = document.getElementById('verify-overlay');
         const mainContent = document.getElementById('main-content');
         
+// Initialize the sound effect
+        const sfx = new Audio('teleport.mp3');
 
+        // Function to detect if on mobile and adjust sound
+        function configureAudioForDevice() {
+            if (window.innerWidth <= 768) {
+                // IT'S A PHONE: Lower the volume to 35%
+                sfx.volume = 0.2; 
+            } else {
+                // IT'S A DESKTOP: Full volume
+                sfx.volume = 0.4; 
+            }
+        }
 
         // Handle the verification click
         verifyBtn.addEventListener('click', () => {
