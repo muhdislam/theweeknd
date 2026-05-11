@@ -2,16 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>The Weeknd | Global Tour</title>
     <style>
-        /* Import aesthetic fonts */
         @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Inter:wght@300;400;700&display=swap');
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            user-select: none; 
+            -webkit-user-select: none;
         }
 
         body, html {
@@ -19,10 +20,10 @@
             font-family: 'Inter', sans-serif;
             background-color: #030303;
             color: #ffffff;
-            overflow: hidden; /* Prevents scrollbars when the button jumps to edges */
+            overflow: hidden; 
+            touch-action: manipulation; 
         }
 
-        /* Dark, moody radial gradient background typical of The Weeknd's aesthetic */
         .hero-section {
             display: flex;
             flex-direction: column;
@@ -32,6 +33,7 @@
             background: radial-gradient(circle at center, #2a0000 0%, #030303 60%);
             text-align: center;
             position: relative;
+            padding: 20px;
         }
 
         .tour-label {
@@ -50,6 +52,7 @@
             color: #ffffff;
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
             margin-bottom: 10px;
+            line-height: 1.1;
         }
 
         .tour-details {
@@ -65,7 +68,6 @@
             margin-bottom: 60px;
         }
 
-        /* The Button Container - Keeps it centered initially */
         .button-wrapper {
             position: relative;
             width: 100%;
@@ -73,7 +75,6 @@
             justify-content: center;
         }
 
-        /* Aesthetic Neon Button */
         #prank-btn {
             position: absolute;
             padding: 18px 45px;
@@ -87,22 +88,51 @@
             border-radius: 50px;
             cursor: pointer;
             box-shadow: 0 0 15px rgba(255, 51, 51, 0.3), inset 0 0 10px rgba(255, 51, 51, 0.1);
-            transition: left 0.15s ease-out, top 0.15s ease-out, background-color 0.3s;
+            transition: left 0.02s linear, top 0.02s linear, background-color 0.3s;
             z-index: 999;
         }
 
-        /* Make it look like it's about to be clicked */
         #prank-btn:hover {
             background-color: #ff3333;
             color: #000;
             box-shadow: 0 0 30px rgba(255, 51, 51, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.8rem;
+                letter-spacing: 6px;
+            }
+            .tour-label {
+                font-size: 0.8rem;
+                letter-spacing: 3px;
+            }
+            .tour-details {
+                font-size: 1rem;
+            }
+            .location {
+                font-size: 0.9rem;
+                margin-bottom: 40px;
+            }
+            #prank-btn {
+                padding: 15px 35px;
+                font-size: 1rem;
+            }
+            #prank-btn::before {
+                content: '';
+                position: absolute;
+                top: -20px;
+                left: -20px;
+                right: -20px;
+                bottom: -20px;
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="hero-section">
-        <div class="tour-label">The Weeknd MY Tour</div>
+        <div class="tour-label">ABEL TESFAYE</div>
         <h1>THE WEEKND</h1>
         <div class="tour-details">November 2026 • Exclusive One-Night Event</div>
         <div class="location">Stadium Nasional Bukit Jalil, Kuala Lumpur</div>
@@ -114,35 +144,54 @@
 
     <script>
         const button = document.getElementById('prank-btn');
+        
+        // Initialize the sound effect
+        const sfx = new Audio('teleport.mp3');
+        sfx.volume = 0.8; // Sets volume to 80%
 
-        // Function to move the button
-        function runAway() {
-            // Get viewport dimensions
+        function runAway(e) {
+            if (e) e.preventDefault(); 
+
+            // Play the sound instantly
+            sfx.currentTime = 0;
+            sfx.play().catch(() => {
+                // Browsers sometimes block audio until the user taps the screen once.
+                // This catch prevents the script from breaking if it's blocked.
+            });
+
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
-
-            // Get button dimensions so it doesn't jump off the screen completely
             const buttonWidth = button.offsetWidth;
             const buttonHeight = button.offsetHeight;
 
-            // Calculate a random X and Y position within the viewport safely
-            const randomX = Math.floor(Math.random() * (windowWidth - buttonWidth));
-            const randomY = Math.floor(Math.random() * (windowHeight - buttonHeight));
+            const currentRect = button.getBoundingClientRect();
+            const currentX = currentRect.left;
+            const currentY = currentRect.top;
 
-            // Change position to fixed so it can roam the entire screen freely
+            let randomX, randomY;
+            let distance = 0;
+            let attempts = 0;
+
+            const minDistance = Math.min(windowWidth, windowHeight) * 0.4;
+
+            do {
+                randomX = Math.floor(Math.random() * (windowWidth - buttonWidth));
+                randomY = Math.floor(Math.random() * (windowHeight - buttonHeight));
+                
+                const dx = randomX - currentX;
+                const dy = randomY - currentY;
+                distance = Math.sqrt(dx * dx + dy * dy);
+                
+                attempts++;
+            } while (distance < minDistance && attempts < 15);
+
             button.style.position = 'fixed';
             button.style.left = randomX + 'px';
             button.style.top = randomY + 'px';
         }
 
-        // Trigger the runaway function whenever the mouse enters the button area
         button.addEventListener('mouseover', runAway);
-        
-        // Optional: Also trigger on touch for mobile users trying to tap it
-        button.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // Prevents the actual click
-            runAway();
-        });
+        button.addEventListener('touchstart', runAway, { passive: false });
     </script>
 
 </body>
