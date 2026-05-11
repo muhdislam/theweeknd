@@ -24,6 +24,63 @@
             touch-action: manipulation; 
         }
 
+        /* --- THE FAKE VERIFICATION OVERLAY --- */
+        #verify-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .verify-box {
+            background-color: #111;
+            padding: 40px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .verify-box h2 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            color: #fff;
+        }
+
+        .verify-box p {
+            color: #aaa;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        #verify-btn {
+            background-color: #ff3333;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        #verify-btn:hover {
+            background-color: #cc0000;
+            color: #fff;
+        }
+
+        /* --- MAIN SITE STYLES --- */
         .hero-section {
             display: flex;
             flex-direction: column;
@@ -34,6 +91,8 @@
             text-align: center;
             position: relative;
             padding: 20px;
+            filter: blur(5px); /* Blurs the background initially */
+            transition: filter 0.5s ease;
         }
 
         .tour-label {
@@ -131,7 +190,15 @@
 </head>
 <body>
 
-    <div class="hero-section">
+    <div id="verify-overlay">
+        <div class="verify-box">
+            <h2>Security Check</h2>
+            <p>Due to high demand for The Weeknd tickets, please verify you are human to enter the site.</p>
+            <button id="verify-btn">Verify & Enter</button>
+        </div>
+    </div>
+
+    <div class="hero-section" id="main-content">
         <div class="tour-label">ABEL TESFAYE</div>
         <h1>THE WEEKND</h1>
         <div class="tour-details">November 2026 • Exclusive One-Night Event</div>
@@ -144,20 +211,46 @@
 
     <script>
         const button = document.getElementById('prank-btn');
+        const verifyBtn = document.getElementById('verify-btn');
+        const overlay = document.getElementById('verify-overlay');
+        const mainContent = document.getElementById('main-content');
         
         // Initialize the sound effect
-        const sfx = new Audio('teleport.mp3');
-        sfx.volume = 0.05; // Sets volume to 80%
+        // Function to detect if on mobile and adjust sound
+        function configureAudioForDevice() {
+            if (window.innerWidth <= 768) {
+                // IT'S A PHONE: Lower the volume to 30%
+                sfx.volume = 0.35; 
+                
+                // UNCOMMENT THE LINE BELOW if you also want the Goku sound to play in slow-motion on phones!
+                // sfx.playbackRate = 0.5; 
+            } else {
+                // IT'S A DESKTOP: Full volume, normal speed
+                sfx.volume = 0.6; 
+                sfx.playbackRate = 0.6;
+            }
+        }
 
+        // Handle the verification click
+        verifyBtn.addEventListener('click', () => {
+            // Unlocks the browser audio policy by playing and immediately pausing
+            sfx.play().then(() => {
+                sfx.pause();
+                sfx.currentTime = 0;
+            }).catch(e => console.log("Audio prep failed", e));
+
+            // Hide overlay and unblur background
+            overlay.style.display = 'none';
+            mainContent.style.filter = 'none';
+        });
+
+        // The prank function
         function runAway(e) {
             if (e) e.preventDefault(); 
 
-            // Play the sound instantly
+            // Play the sound
             sfx.currentTime = 0;
-            sfx.play().catch(() => {
-                // Browsers sometimes block audio until the user taps the screen once.
-                // This catch prevents the script from breaking if it's blocked.
-            });
+            sfx.play().catch(e => console.log("Audio block: ", e));
 
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
